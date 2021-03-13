@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/Clonado.iml" filepath="$PROJECT_DIR$/.idea/Clonado.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Clonado.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Clonado.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/TFlite_TFG.iml" filepath="$PROJECT_DIR$/.idea/modules/TFlite_TFG.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/TFlite_TFG.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/TFlite_TFG.app.iml" />
     </modules>
   </component>
 </project>

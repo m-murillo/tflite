@@ -43,7 +43,7 @@ public class ImageClassifier {
   private static final String TAG = "TfLite";
 
   /** Name of the model file stored in Assets. */
-  private static final String MODEL_PATH = "model.tflite";
+  private static final String MODEL_PATH = "custom.tflite";
 
   /** Name of the label file stored in Assets. */
   private static final String LABEL_PATH = "labels.txt";
@@ -52,14 +52,14 @@ public class ImageClassifier {
   private static final int RESULTS_TO_SHOW = 3;
 
   /** Dimensions of inputs. */
-  private static final int DIM_BATCH_SIZE = 1;
+  private static final int DIM_BATCH_SIZE = 1; // amount of images per single processing
 
-  private static final int DIM_PIXEL_SIZE = 1; //3
+  private static final int DIM_PIXEL_SIZE = 3; // r+g+b = 1+1+1
 
   static final int DIM_IMG_SIZE_X = 416;
   static final int DIM_IMG_SIZE_Y = 416;
 
-  private static final float IMAGE_MEAN = 127.5f;
+  private static final float IMAGE_MEAN = 127.5f; //127.5f
   private static final float IMAGE_STD = 127.5f;
 
 
@@ -94,13 +94,9 @@ public class ImageClassifier {
 
   /** Initializes an {@code ImageClassifier}. */
   ImageClassifier(Activity activity) throws IOException {
-    tflite = new Interpreter(loadModelFile(activity));
+    tflite = new Interpreter((ByteBuffer) loadModelFile(activity));
     labelList = loadLabelList(activity);
-    //-------------------------------------------------------------------------------------------
-    //imgData =
-    //    ByteBuffer.allocateDirect(
-    //        4 * DIM_BATCH_SIZE * DIM_IMG_SIZE_X * DIM_IMG_SIZE_Y * DIM_PIXEL_SIZE);
-    imgData = ByteBuffer.allocateDirect(DIM_BATCH_SIZE * DIM_IMG_SIZE_X * DIM_IMG_SIZE_Y * DIM_PIXEL_SIZE * 1);
+    imgData = ByteBuffer.allocateDirect(DIM_BATCH_SIZE * DIM_IMG_SIZE_X * DIM_IMG_SIZE_Y * DIM_PIXEL_SIZE * 4); // size of float = 4
     imgData.order(ByteOrder.nativeOrder());
     labelProbArray = new float[1][labelList.size()];
     filterLabelProbArray = new float[FILTER_STAGES][labelList.size()];
@@ -195,9 +191,13 @@ public class ImageClassifier {
     for (int i = 0; i < DIM_IMG_SIZE_X; ++i) {
       for (int j = 0; j < DIM_IMG_SIZE_Y; ++j) {
         final int val = intValues[pixel++];
-        imgData.putFloat((((val >> 16) & 0xFF)-IMAGE_MEAN)/IMAGE_STD);
-        imgData.putFloat((((val >> 8) & 0xFF)-IMAGE_MEAN)/IMAGE_STD);
-        imgData.putFloat((((val) & 0xFF)-IMAGE_MEAN)/IMAGE_STD);
+        //imgData.putFloat((((val >> 16) & 0xFF)-IMAGE_MEAN)/IMAGE_STD);
+        //imgData.putFloat((((val >> 8) & 0xFF)-IMAGE_MEAN)/IMAGE_STD);
+        //imgData.putFloat((((val) & 0xFF)-IMAGE_MEAN)/IMAGE_STD);
+        imgData
+                .put((byte)((val >> 16) & 0xFF))    // R
+                .put((byte)((val >>  8) & 0xFF))    // G
+                .put((byte)((val      ) & 0xFF));   // B
       }
     }
     long endTime = SystemClock.uptimeMillis();
